@@ -1,0 +1,92 @@
+### GET request to example server
+GET http://localhost:3000/api/v1/products
+
+### GET request to example server
+GET http://localhost:3000/api/v1/market
+
+###
+POST http://localhost:3000/api/v1/market
+Content-Type: application/json
+
+{
+  "name": "Lidl Pinneberg",
+  "country": "Germany",
+  "city": "Hamburg",
+  "address": "Pinneberg 23",
+  "zip": "22455",
+  "organization": "Lidl"
+}
+
+###
+PUT http://localhost:3000/api/v1/market/1
+Content-Type: application/json
+
+{
+  "name": "Aldi Pinneberg",
+  "country": "Germany",
+  "city": "Hamburg",
+  "address": "Pinneberg 20",
+  "zip": "22455",
+  "organization": "Aldi"
+}
+
+###
+GET http://localhost:3000/api/v1/markets/1/inventory
+
+###
+POST http://localhost:3000/api/v1/markets/1/inventory
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 25
+}
+
+###
+PUT http://localhost:3000/api/v1/markets/1/inventory/2
+Content-Type: application/json
+
+{
+  "quantity": 20
+}
+
+###
+DELETE http://localhost:3000/api/v1/markets/1/inventory/2
+
+###
+DELETE http://localhost:3000/api/v1/market/2
+
+###
+POST http://localhost:3000/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Pepsi3",
+  "price": 4.2,
+  "description": "Cola is "
+}
+
+###
+PUT http://localhost:3000/api/v1/products/1
+Content-Type: application/json
+
+{
+  "name": "Pepsi",
+  "price": 3.2,
+  "description": "Pepsi is better than Cola"
+}
+
+### GET request to example server
+GET http://localhost:3000/api/v1/products/1
+
+### GET request to example server
+DELETE http://localhost:3000/api/v1/products/1
+
+###
+GET http://localhost:3000/api/v1/products/search?name=Pepsi
+
+###
+GET http://localhost:3000/api/v1/products/cheap?maxPrice=4
+
+###
+GET http://localhost:3000/api/v1/products/in-range?min=4&max=6
