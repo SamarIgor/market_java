@@ -1,6 +1,7 @@
 package org.app.app.service;
 
 import jakarta.transaction.Transactional;
+import org.app.app.dto.InventoryItemRequest;
 import org.app.app.dto.InventoryItemResponse;
 import org.app.app.exception.NotFoundException;
 import org.app.app.mapper.InventoryMapper;
@@ -13,6 +14,8 @@ import org.app.app.repository.MarketRepository;
 import org.app.app.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +40,7 @@ public class InventoryService {
     }
 
     // ✅ GET inventory
-    public List<InventoryItemResponse> getInventory(Long marketId) {
+    public Page<InventoryItemResponse> getInventory(Pageable pageable, Long marketId) {
         log.info("Fetching all items from inventory");
 
         Market market = marketRepository.findById(marketId)
@@ -47,12 +50,10 @@ public class InventoryService {
                 });
 
         Inventory inventory = market.getInventory();
-        List<InventoryItemResponse> items = itemRepository.findByInventoryId(inventory.getId())
-                .stream()
-                .map(InventoryMapper::toResponse)
-                .collect(Collectors.toList());
+        Page<InventoryItemResponse> items = itemRepository.findByInventoryId(pageable,inventory.getId())
+                .map(InventoryMapper::toResponse);
 
-        log.info("Search found {} number of items in inventory", items.size());
+        log.info("Search found {} number of items in inventory", items.getSize());
 
         return items;
     }
@@ -94,6 +95,47 @@ public class InventoryService {
 
         log.info("Saved new item '{}'", newItem.getProduct().getName());
         return InventoryMapper.toResponse(newItem);
+    }
+
+    @Transactional
+    public List<InventoryItemResponse> createInventoryItems(
+            List<InventoryItemRequest> requests
+    ) {
+
+        List<InventoryItem> inventoryItems = requests.stream()
+                .map(request -> {
+
+                    Market market = marketRepository.findById(request.getMarketId())
+                            .orElseThrow(() ->
+                                    new NotFoundException(
+                                            "Market not found with id: " + request.getMarketId()
+                                    )
+                            );
+
+                    Product product = productRepository.findById(request.getProductId())
+                            .orElseThrow(() ->
+                                    new NotFoundException(
+                                            "Product not found with id: " + request.getProductId()
+                                    )
+                            );
+
+                    Inventory inventory = market.getInventory();
+                    InventoryItem inventoryItem = new InventoryItem();
+
+                    inventoryItem.setInventory(inventory);
+                    inventoryItem.setProduct(product);
+                    inventoryItem.setQuantity(request.getQuantity());
+
+                    return inventoryItem;
+                })
+                .toList();
+
+        List<InventoryItem> saved =
+                itemRepository.saveAll(inventoryItems);
+
+        return saved.stream()
+                .map(InventoryMapper::toResponse)
+                .toList();
     }
 
     // ✅ UPDATE quantity

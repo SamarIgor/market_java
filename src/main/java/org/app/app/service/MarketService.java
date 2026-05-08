@@ -10,6 +10,8 @@ import org.app.app.model.Market;
 import org.app.app.repository.MarketRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,15 +28,13 @@ public class MarketService {
         this.marketRepository = marketRepository;
     }
 
-    public List<MarketResponse> showAllMarkets() {
+    public Page<MarketResponse> showAllMarkets(Pageable pageable) {
         log.info("Fetching all markets");
 
-        List<MarketResponse> response = marketRepository.findAll()
-                .stream()
-                .map(MarketMapper::toResponse)
-                .collect(Collectors.toList());
+        Page<MarketResponse> response = marketRepository.findAll(pageable)
+                .map(MarketMapper::toResponse);
 
-        log.info("Search found {} number of markets", response.size());
+        log.info("Search found {} number of markets", response.getSize());
         return response;
     }
 
@@ -62,6 +62,29 @@ public class MarketService {
 
         log.info("Saved new market {}", newMarket);
         return MarketMapper.toResponse(newMarket);
+    }
+
+    public List<MarketResponse> addMoreNewMarkets(@Valid List<MarketRequest> request) {
+
+        log.info("Creating {} new markets", request.size());
+
+        List<Market> m = request.stream()
+                .map(request1 -> {
+                    Market market = MarketMapper.toEntity(request1);
+
+                    Inventory inventory = new Inventory();
+
+                    market.setInventory(inventory);
+                    return market;
+                })
+                .toList();
+
+        List<Market> newMarkets = marketRepository.saveAll(m);
+
+        log.info("Saved {} new markets", newMarkets.size());
+        return newMarkets.stream()
+                .map(MarketMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     public void deleteMarket(Long id) {

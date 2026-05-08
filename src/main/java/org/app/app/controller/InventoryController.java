@@ -1,13 +1,14 @@
 package org.app.app.controller;
 
 import jakarta.validation.Valid;
-import org.app.app.dto.AddProductToInventoryRequest;
-import org.app.app.dto.InventoryItemResponse;
-import org.app.app.dto.InventoryQuantityRequest;
-import org.app.app.dto.MarketResponse;
+import org.app.app.dto.*;
 import org.app.app.model.InventoryItem;
 import org.app.app.response.ApiResponse;
 import org.app.app.service.InventoryService;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +27,12 @@ public class InventoryController {
 
     // ✅ GET
     @GetMapping("/{marketId}/inventory")
-    public ResponseEntity<ApiResponse<List<InventoryItemResponse>>> getInventory(@PathVariable Long marketId) {
-        List<InventoryItemResponse> inventoryItemResponses = inventoryService.getInventory(marketId);
-        ApiResponse<List<InventoryItemResponse>> apiResponse = new ApiResponse<>(
+    public ResponseEntity<ApiResponse<Page<InventoryItemResponse>>> getInventory(
+            @PathVariable Long marketId,
+            @PageableDefault(size = 10, sort = "id")
+            @ParameterObject Pageable pageable) {
+        Page<InventoryItemResponse> inventoryItemResponses = inventoryService.getInventory(pageable, marketId);
+        ApiResponse<Page<InventoryItemResponse>> apiResponse = new ApiResponse<>(
                 HttpStatus.OK.value(),
                 "Inventory fetched successfully",
                 inventoryItemResponses
@@ -76,6 +80,25 @@ public class InventoryController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(apiResponse);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<ApiResponse<List<InventoryItemResponse>>> createInventoryItems(
+            @RequestBody List<InventoryItemRequest> requests
+    ) {
+
+        List<InventoryItemResponse> response =
+                inventoryService.createInventoryItems(requests);
+
+        ApiResponse<List<InventoryItemResponse>> apiResponse =
+                new ApiResponse<>(
+                        HttpStatus.CREATED.value(),
+                        "Inventory items created successfully",
+                        response
+                );
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(apiResponse);
     }
 
     // ✅ PUT

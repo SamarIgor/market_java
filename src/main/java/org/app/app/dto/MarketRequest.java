@@ -4,22 +4,48 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class MarketRequest {
 
     @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(
+            regexp = "^[a-zA-ZÀ-ÿ\\s'-]+$",
+            message = "Name contains invalid characters"
+    )
     private String name;
     @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(
+            regexp = "^[a-zA-ZÀ-ÿ\\s'-]+$",
+            message = "Organization contains invalid characters"
+    )
     private String organization;
     @NotBlank
-    @Size(max = 6, message = "Zip code isnt longer than 6")
+    @Size(max = 6, message = "ZIP code must contain 5 or 6 digits")
     private String zip;
     @NotBlank
+    @Size(min = 5, max = 100)
+    @Pattern(
+            regexp = "^[a-zA-Z0-9À-ÿ\\s,./'-]+$",
+            message = "Address contains invalid characters"
+    )
     private String address;
     @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(
+            regexp = "^[a-zA-ZÀ-ÿ\\s'-]+$",
+            message = "City contains invalid characters"
+    )
     private String city;
     @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(
+            regexp = "^[a-zA-ZÀ-ÿ\\s'-]+$",
+            message = "Country contains invalid characters"
+    )
     private String country;
 
     public MarketRequest(String country, String city, String address, String zip, String organization, String name) {

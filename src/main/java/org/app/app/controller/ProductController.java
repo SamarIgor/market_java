@@ -5,6 +5,10 @@ import org.app.app.dto.ProductRequest;
 import org.app.app.dto.ProductResponse;
 import org.app.app.response.ApiResponse;
 import org.app.app.service.ProductService;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +26,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProducts(){
-        List<ProductResponse> response = productService.getProducts();
+    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getProducts(
+            @PageableDefault(size = 10, sort = "name")
+            @ParameterObject Pageable pageable){
+        Page<ProductResponse> response = productService.getProducts(pageable);
 
-        ApiResponse<List<ProductResponse>>  apiResponse = new ApiResponse<>(
+        ApiResponse<Page<ProductResponse>>  apiResponse = new ApiResponse<>(
                 HttpStatus.OK.value(),
                 "Products fetched successfully",
                 response
@@ -40,6 +46,18 @@ public class ProductController {
         ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(
                 HttpStatus.CREATED.value(),
                 "Product inserted successfully",
+                response
+        );
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(apiResponse);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> addManyProducts(@RequestBody List<ProductRequest> request){
+        List<ProductResponse> response = productService.insertManyProducts(request);
+
+        ApiResponse<List<ProductResponse>> apiResponse = new ApiResponse<>(
+                HttpStatus.CREATED.value(),
+                "Products inserted successfully",
                 response
         );
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(apiResponse);

@@ -5,6 +5,10 @@ import org.app.app.dto.MarketRequest;
 import org.app.app.dto.MarketResponse;
 import org.app.app.response.ApiResponse;
 import org.app.app.service.MarketService;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +26,12 @@ public class MarketController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<MarketResponse>>> getAllMarkets(){
-        List<MarketResponse> response = marketService.showAllMarkets();;
+    public ResponseEntity<ApiResponse<Page<MarketResponse>>> getAllMarkets(
+            @PageableDefault(size = 10, sort = "name")
+            @ParameterObject Pageable pageable){
+        Page<MarketResponse> response = marketService.showAllMarkets(pageable);;
 
-        ApiResponse<List<MarketResponse>> apiResponse = new ApiResponse<>(
+        ApiResponse<Page<MarketResponse>> apiResponse = new ApiResponse<>(
                 HttpStatus.OK.value(),
                 "Markets fetched successfully",
                 response
@@ -54,6 +60,19 @@ public class MarketController {
         MarketResponse response = marketService.addNewMarket(request);
 
         ApiResponse<MarketResponse> apiResponse = new ApiResponse<>(
+                HttpStatus.CREATED.value(),
+                "Market inserted successfully",
+                response
+        );
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(apiResponse);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<ApiResponse<List<MarketResponse>>> insertMoreMarkets(
+            @RequestBody @Valid List<MarketRequest> request){
+        List<MarketResponse> response = marketService.addMoreNewMarkets(request);
+
+        ApiResponse<List<MarketResponse>> apiResponse = new ApiResponse<>(
                 HttpStatus.CREATED.value(),
                 "Market inserted successfully",
                 response

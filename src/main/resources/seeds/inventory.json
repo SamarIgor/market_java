@@ -1,0 +1,82 @@
+[
+  {
+    "marketId": 1,
+    "productId": 1,
+    "quantity": 10
+  },
+  {
+    "marketId": 1,
+    "productId": 2,
+    "quantity": 20
+  },
+  {
+    "marketId": 1,
+    "productId": 3,
+    "quantity": 5
+  },
+  {
+    "marketId": 1,
+    "productId": 4,
+    "quantity": 7
+  },
+  {
+    "marketId": 1,
+    "productId": 5,
+    "quantity": 14
+  },
+  {
+    "marketId": 2,
+    "productId": 1,
+    "quantity": 8
+  },
+  {
+    "marketId": 2,
+    "productId": 6,
+    "quantity": 11
+  },
+  {
+    "marketId": 2,
+    "productId": 7,
+    "quantity": 9
+  },
+  {
+    "marketId": 3,
+    "productId": 8,
+    "quantity": 17
+  },
+  {
+    "marketId": 3,
+    "productId": 9,
+    "quantity": 4
+  },
+  {
+    "marketId": 4,
+    "productId": 10,
+    "quantity": 13
+  },
+  {
+    "marketId": 4,
+    "productId": 11,
+    "quantity": 16
+  },
+  {
+    "marketId": 5,
+    "productId": 12,
+    "quantity": 6
+  },
+  {
+    "marketId": 5,
+    "productId": 13,
+    "quantity": 18
+  },
+  {
+    "marketId": 6,
+    "productId": 14,
+    "quantity": 12
+  },
+  {
+    "marketId": 6,
+    "productId": 15,
+    "quantity": 21
+  }
+]

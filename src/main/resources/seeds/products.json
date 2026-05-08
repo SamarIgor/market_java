@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Keyboard",
+    "description": "Mechanical gaming keyboard",
+    "price": 99.99
+  },
+  {
+    "name": "Mouse",
+    "description": "Wireless ergonomic mouse",
+    "price": 49.99
+  },
+  {
+    "name": "Monitor",
+    "description": "27 inch 4K monitor",
+    "price": 399.99
+  },
+  {
+    "name": "Laptop",
+    "description": "High performance laptop",
+    "price": 1299.99
+  },
+  {
+    "name": "Desk",
+    "description": "Wooden office desk",
+    "price": 199.99
+  },
+  {
+    "name": "Chair",
+    "description": "Ergonomic office chair",
+    "price": 249.99
+  },
+  {
+    "name": "Headphones",
+    "description": "Noise cancelling headphones",
+    "price": 149.99
+  },
+  {
+    "name": "Webcam",
+    "description": "HD USB webcam",
+    "price": 79.99
+  },
+  {
+    "name": "Microphone",
+    "description": "Studio quality microphone",
+    "price": 119.99
+  },
+  {
+    "name": "Printer",
+    "description": "Color laser printer",
+    "price": 299.99
+  },
+  {
+    "name": "Tablet",
+    "description": "10 inch Android tablet",
+    "price": 349.99
+  },
+  {
+    "name": "Phone",
+    "description": "Latest smartphone model",
+    "price": 999.99
+  },
+  {
+    "name": "Speaker",
+    "description": "Bluetooth portable speaker",
+    "price": 89.99
+  },
+  {
+    "name": "Router",
+    "description": "WiFi 6 router",
+    "price": 159.99
+  },
+  {
+    "name": "SSD",
+    "description": "1TB NVMe SSD",
+    "price": 129.99
+  }
+]

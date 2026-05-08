@@ -8,6 +8,8 @@ import org.app.app.model.Product;
 import org.app.app.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,15 +27,13 @@ public class ProductService {
     }
 
     // GET All Products
-    public List<ProductResponse> getProducts(){
+    public Page<ProductResponse> getProducts(Pageable pageable){
         log.info("Fetching all products");
 
-        List<ProductResponse> response = productRepository.findAll()
-                .stream()
-                .map(ProductMapper::toResponse)
-                .collect(Collectors.toList());
+        Page<ProductResponse> response = productRepository.findAll(pageable)
+                .map(ProductMapper::toResponse);
 
-        log.info("Fetched {} products", response.size());
+        log.info("Fetched {} products", response.getSize());
         return response;
     }
 
@@ -48,7 +48,23 @@ public class ProductService {
         return ProductMapper.toResponse(saved);
     }
 
-    // GET Find Product by Id
+    // POST bulk
+    public List<ProductResponse> insertManyProducts(List<ProductRequest> request) {
+        log.info("Inserting {} new products", request.size());
+
+        List<Product> products = request.stream()
+                .map(ProductMapper::toEntity)
+                .collect(Collectors.toList());
+
+        List<Product> saved = productRepository.saveAll(products);
+
+        log.info("Successfully inserted {} new products", request.size());
+        return saved.stream()
+                .map(ProductMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    // GET Find Product by id
     public ProductResponse findProductById(Long id) {
         log.info("Fetching product with id {}", id);
         return productRepository.findById(id)
@@ -91,4 +107,6 @@ public class ProductService {
 
         productRepository.deleteById(id);
     }
+
+
 }

@@ -1,0 +1,66 @@
+[
+  {
+    "country": "Germany",
+    "city": "Hamburg",
+    "address": "Mönckebergstraße 12",
+    "zip": "20095",
+    "organization": "Fresh Foods GmbH",
+    "name": "Fresh Market Hamburg"
+  },
+  {
+    "country": "Germany",
+    "city": "Berlin",
+    "address": "Alexanderplatz 5",
+    "zip": "10178",
+    "organization": "Tech Retail AG",
+    "name": "Tech Plaza Berlin"
+  },
+  {
+    "country": "Germany",
+    "city": "Munich",
+    "address": "Leopoldstraße 45",
+    "zip": "80802",
+    "organization": "Home Living GmbH",
+    "name": "Home Center Munich"
+  },
+  {
+    "country": "Germany",
+    "city": "Cologne",
+    "address": "Hohe Straße 88",
+    "zip": "50667",
+    "organization": "Daily Essentials GmbH",
+    "name": "Daily Mart Cologne"
+  },
+  {
+    "country": "Germany",
+    "city": "Frankfurt",
+    "address": "Zeil 101",
+    "zip": "60313",
+    "organization": "Book World AG",
+    "name": "Book World Frankfurt"
+  },
+  {
+    "country": "Germany",
+    "city": "Stuttgart",
+    "address": "Königstraße 33",
+    "zip": "70173",
+    "organization": "Fashion Group GmbH",
+    "name": "Fashion Point Stuttgart"
+  },
+  {
+    "country": "Germany",
+    "city": "Düsseldorf",
+    "address": "Schadowstraße 21",
+    "zip": "40212",
+    "organization": "Gaming Retail GmbH",
+    "name": "Game Hub Düsseldorf"
+  },
+  {
+    "country": "Germany",
+    "city": "Leipzig",
+    "address": "Petersstraße 14",
+    "zip": "04109",
+    "organization": "Pet Supplies GmbH",
+    "name": "Pet Store Leipzig"
+  }
+]
