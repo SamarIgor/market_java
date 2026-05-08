@@ -33,6 +33,22 @@ public class MarketController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(apiResponse);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<MarketResponse>> getMarketById(
+            @PathVariable Long id) {
+
+        MarketResponse response = marketService.getMarketById(id);
+
+        ApiResponse<MarketResponse> apiResponse =
+                new ApiResponse<>(
+                        HttpStatus.OK.value(),
+                        "Market fetched successfully",
+                        response
+                );
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<MarketResponse>> postMarket(@RequestBody @Valid MarketRequest request){
         MarketResponse response = marketService.addNewMarket(request);

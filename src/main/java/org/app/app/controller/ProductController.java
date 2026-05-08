@@ -57,21 +57,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(apiResponse);
     }
 
-    @GetMapping("/search")
-    public List<ProductResponse> search(@RequestParam String name) {
-        return productService.searchProducts(name);
-    }
-
-    @GetMapping("/cheap")
-    public List<ProductResponse> lessThanPrice(@RequestParam double maxPrice) {
-        return productService.getCheapProducts(maxPrice);
-    }
-
-    @GetMapping("/in-range")
-    public List<ProductResponse> inBetweenPrice(@RequestParam double min, double max) {
-        return productService.getProductsInRange(min, max);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> update(@PathVariable Long id, @RequestBody @Valid ProductRequest request) {
         ProductResponse response = productService.updateProduct(id, request);

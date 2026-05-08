@@ -38,6 +38,19 @@ public class MarketService {
         return response;
     }
 
+    public MarketResponse getMarketById(Long id) {
+        log.info("Fetching market with id '{}'", id);
+
+        Market market = marketRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Market with id '{}' not found", id);
+                    return new NotFoundException("Market not found");
+                });
+
+        log.info("Market with id '{}' found", id);
+        return MarketMapper.toResponse(market);
+    }
+
     public MarketResponse addNewMarket(MarketRequest request) {
         log.info("Creating market with name {}", request.getName());
 
@@ -47,7 +60,7 @@ public class MarketService {
         m.setInventory(inventory);
         Market newMarket = marketRepository.save(m);
 
-        log.info("Saved new market {}", newMarket.toString());
+        log.info("Saved new market {}", newMarket);
         return MarketMapper.toResponse(newMarket);
     }
 
@@ -83,4 +96,6 @@ public class MarketService {
         log.info("Saved market with id {}", id);
         return MarketMapper.toResponse(updated);
     }
+
+
 }

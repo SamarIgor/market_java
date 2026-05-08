@@ -8,9 +8,6 @@ import jakarta.validation.constraints.Size;
 
 public class MarketRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @NotBlank
     private String name;
     @NotBlank
@@ -25,8 +22,7 @@ public class MarketRequest {
     @NotBlank
     private String country;
 
-    public MarketRequest(Long id, String country, String city, String address, String zip, String organization, String name) {
-        this.id = id;
+    public MarketRequest(String country, String city, String address, String zip, String organization, String name) {
         this.country = country;
         this.city = city;
         this.address = address;
@@ -39,9 +35,6 @@ public class MarketRequest {
         return name;
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public String getOrganization() {
         return organization;
@@ -61,30 +54,6 @@ public class MarketRequest {
 
     public String getZip() {
         return zip;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
     }
 
     public void setName(String name) {

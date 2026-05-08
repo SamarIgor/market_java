@@ -59,43 +59,6 @@ public class ProductService {
                 });
     }
 
-    // GET Find Product by Name
-    public List<ProductResponse> searchProducts(String name) {
-        log.info("Searching for product with name {}", name);
-
-        List<ProductResponse> response = productRepository.findByNameContainingIgnoreCase(name)
-                .stream()
-                .map(ProductMapper::toResponse)
-                .collect(Collectors.toList());
-
-        log.info("Search for {} product, found {} results", name, response.size());
-        return response;
-    }
-
-    // GET Cheaper Products than Price
-    public List<ProductResponse> getCheapProducts(double price) {
-        if (price <= 0) {
-            throw new IllegalArgumentException("maxPrice must be greater than 0");
-        }
-
-        return productRepository.findByPriceLessThan(price)
-                .stream()
-                .map(ProductMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    // GET Products in range of two prices
-    public List<ProductResponse> getProductsInRange(double min, double max) {
-        if (min < 0 || max < 0 || min > max) {
-            throw new IllegalArgumentException("Invalid price range");
-        }
-
-        return productRepository.findByPriceBetween(min, max)
-                .stream()
-                .map(ProductMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
     // PUT Update Products Information
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         log.info("Updating product with id {}", id);

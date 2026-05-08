@@ -144,4 +144,30 @@ public class InventoryService {
         itemRepository.delete(item);
         log.info("Deleted item with product '{}' from market '{}'", productId, marketId);
     }
+
+    public InventoryItemResponse getInventoryItem(Long marketId, Long productId) {
+        log.info("Searching for item with product id '{}' into market id '{}'", productId, marketId);
+
+        Market market = marketRepository.findById(marketId)
+                .orElseThrow(() -> {
+                    log.warn("POST Inventory Item: Market with id '{}' not found", marketId);
+                    return new NotFoundException("Market not found");
+                });
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> {
+                    log.warn("POST Inventory Item: Product with id '{}' not found", productId);
+                    return new NotFoundException("Product not found");
+                });
+
+        Inventory inventory = market.getInventory();
+        InventoryItem item = itemRepository.findByInventoryIdAndProductId(inventory.getId(), productId)
+                .orElseThrow(() -> {
+                    log.warn("GET/id Inventory item: Product with id '{}' not found in inventory", productId);
+                    return new NotFoundException("Item not found");
+                });
+
+        log.info("Successfully found product '{}' in market '{}'", productId, marketId);
+        return InventoryMapper.toResponse(item);
+    }
 }

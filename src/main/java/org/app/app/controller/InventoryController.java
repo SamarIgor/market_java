@@ -1,7 +1,9 @@
 package org.app.app.controller;
 
+import jakarta.validation.Valid;
 import org.app.app.dto.AddProductToInventoryRequest;
 import org.app.app.dto.InventoryItemResponse;
+import org.app.app.dto.InventoryQuantityRequest;
 import org.app.app.dto.MarketResponse;
 import org.app.app.model.InventoryItem;
 import org.app.app.response.ApiResponse;
@@ -34,6 +36,27 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(apiResponse);
     }
 
+    @GetMapping("/{marketId}/inventory/{productId}")
+    public ResponseEntity<ApiResponse<InventoryItemResponse>> getInventoryItem(
+            @PathVariable Long marketId,
+            @PathVariable Long productId) {
+
+        InventoryItemResponse response =
+                inventoryService.getInventoryItem(
+                        marketId,
+                        productId
+                );
+
+        ApiResponse<InventoryItemResponse> apiResponse =
+                new ApiResponse<>(
+                        HttpStatus.OK.value(),
+                        "Inventory item fetched successfully",
+                        response
+                );
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     // ✅ POST
     @PostMapping("/{marketId}/inventory")
     public ResponseEntity<ApiResponse<InventoryItemResponse>>
@@ -60,7 +83,7 @@ public class InventoryController {
     public ResponseEntity<ApiResponse<InventoryItemResponse>> updateQuantity(
             @PathVariable Long marketId,
             @PathVariable Long productId,
-            @RequestBody AddProductToInventoryRequest request) {
+            @RequestBody @Valid InventoryQuantityRequest request) {
 
         InventoryItemResponse inventoryItemResponse =  inventoryService.updateQuantity(
                 marketId,
