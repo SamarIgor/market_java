@@ -11,6 +11,8 @@ import org.app.app.model.Product;
 import org.app.app.repository.InventoryItemRepository;
 import org.app.app.repository.MarketRepository;
 import org.app.app.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +25,8 @@ public class InventoryService {
     private final MarketRepository marketRepository;
     private final ProductRepository productRepository;
     private final InventoryItemRepository itemRepository;
+    private static final Logger log =
+            LoggerFactory.getLogger(ProductService.class);
 
     public InventoryService(MarketRepository marketRepository,
                             ProductRepository productRepository,
@@ -34,44 +38,49 @@ public class InventoryService {
 
     // ✅ GET inventory
     public List<InventoryItemResponse> getInventory(Long marketId) {
+        log.info("Fetching all items from inventory");
+
         Market market = marketRepository.findById(marketId)
-                .orElseThrow(() -> new NotFoundException("Market not found"));
+                .orElseThrow(() -> {
+                    log.warn("GET Inventory: Market with id " + marketId + " not found");
+                    return new NotFoundException("Market not found");
+                });
 
         Inventory inventory = market.getInventory();
-
-//        return market.getInventory().getItems()
-//                .stream()
-//                .map(InventoryMapper::toResponse)
-//                .toList();
-        return itemRepository.findByInventoryId(inventory.getId())
+        List<InventoryItemResponse> items = itemRepository.findByInventoryId(inventory.getId())
                 .stream()
                 .map(InventoryMapper::toResponse)
                 .collect(Collectors.toList());
+
+        log.info("Search found {} number of items in inventory", items.size());
+
+        return items;
     }
 
     // ✅ ADD product
     @Transactional
     public InventoryItemResponse addProduct(Long marketId, Long productId, int quantity) {
+        log.info("Adding new item with product id '{}' into market id '{}'", productId, marketId);
 
         Market market = marketRepository.findById(marketId)
-                .orElseThrow(() -> new NotFoundException("Market not found"));
+                .orElseThrow(() -> {
+                    log.warn("POST Inventory Item: Market with id '{}' not found", marketId);
+                    return new NotFoundException("Market not found");
+                });
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException("Product not found"));
+                .orElseThrow(() -> {
+                    log.warn("POST Inventory Item: Product with id '{}' not found", productId);
+                    return new NotFoundException("Product not found");
+                });
 
         Inventory inventory = market.getInventory();
 
-        // check item already exits, if it does increment its quantity
-//        for (InventoryItem item : inventory.getItems()) {
-//            if (item.getProduct().getId().equals(productId)) {
-//                item.setQuantity(item.getQuantity() + quantity);
-//                return InventoryMapper.toResponse(item);
-//            }
-//        }
         Optional<InventoryItem> exists = itemRepository.findByInventoryIdAndProductId(inventory.getId(), productId);
         if(exists.isPresent()){
             InventoryItem item = exists.get();
             item.setQuantity(item.getQuantity() + quantity);
+            log.info("Upadated item's '{}' quantity to {}", item.getProduct().getName(), item.getQuantity());
             return InventoryMapper.toResponse(item);
         }
 
@@ -82,28 +91,34 @@ public class InventoryService {
         newItem.setInventory(inventory);
 
         itemRepository.save(newItem);
+
+        log.info("Saved new item '{}'", newItem.getProduct().getName());
         return InventoryMapper.toResponse(newItem);
     }
 
     // ✅ UPDATE quantity
     @Transactional
     public InventoryItemResponse updateQuantity(Long marketId, Long productId, int quantity) {
-
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be positive");
-        }
+        log.info("Updating item with product id '{}' in market id '{}'", productId, marketId);
 
         Market market = marketRepository.findById(marketId)
-                .orElseThrow(() -> new NotFoundException("Market not found"));
+                .orElseThrow(() -> {
+                    log.warn("PUT Inventory Item: Market with id '{}' not found", marketId);
+                    return new NotFoundException("Market not found");
+                });
 
         Inventory inventory = market.getInventory();
 
         InventoryItem item = itemRepository
                 .findByInventoryIdAndProductId(inventory.getId(), productId)
-                .orElseThrow(() -> new NotFoundException("Product not in inventory"));
+                .orElseThrow(() -> {
+                    log.warn("PUT Inventory Item: Product with id '{}' not found", productId);
+                    return new NotFoundException("Product not found");
+                });
 
         item.setQuantity(quantity);
 
+        log.info("Updated quantity of item '{}' to {}", item.getProduct().getName(), item.getQuantity());
         return InventoryMapper.toResponse(item);
     }
 
@@ -112,14 +127,21 @@ public class InventoryService {
     public void removeProduct(Long marketId, Long productId) {
 
         Market market = marketRepository.findById(marketId)
-                .orElseThrow(() -> new NotFoundException("Market not found"));
+                .orElseThrow(() -> {
+                    log.warn("DELETE Inventory Item: Market with id '{}' not found", marketId);
+                    return new NotFoundException("Market not found");
+                });
 
         Inventory inventory = market.getInventory();
 
         InventoryItem item = itemRepository
                 .findByInventoryIdAndProductId(inventory.getId(), productId)
-                .orElseThrow(() -> new NotFoundException("Product not in inventory"));
+                .orElseThrow(() -> {
+                    log.warn("DELETE Inventory Item: Product with id '{}' not found", productId);
+                    return new NotFoundException("Product not found");
+                });
 
         itemRepository.delete(item);
+        log.info("Deleted item with product '{}' from market '{}'", productId, marketId);
     }
 }
